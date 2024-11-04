@@ -1,8 +1,9 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/common/dto/create-user.dto';
 import { VerifyEmailDto } from 'src/common/dto/verify-email.dto';
-// import { LoginUserDto } from "./dto/login-user.dto"
+import { LoginUserDto } from './dto/login-user.dto';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -14,7 +15,18 @@ export class AuthController {
   }
 
   @Post('verify-email')
-  verifyEmail(@Body() verifyEmailDto: VerifyEmailDto) {
-    return this.authService.verifyEmailAndCreateUser(verifyEmailDto);
+  verifyEmail(
+    @Body() verifyEmailDto: VerifyEmailDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return this.authService.verifyEmailAndCreateUser(verifyEmailDto, response);
+  }
+
+  @Post('login')
+  login(
+    @Body() loginUserDto: LoginUserDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    return this.authService.login(loginUserDto, response);
   }
 }

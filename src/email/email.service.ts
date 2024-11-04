@@ -1,7 +1,7 @@
-import { Injectable } from "@nestjs/common"
+import { Injectable } from '@nestjs/common';
 // import { google } from "googleapis"
-import * as nodemailer from "nodemailer"
-import { PrismaService } from "src/prisma.service"
+import * as nodemailer from 'nodemailer';
+import { PrismaService } from 'src/prisma.service';
 
 // const oAuth2Client = new google.auth.OAuth2(
 // 	process.env.EMAIL_CLIENT_ID,
@@ -12,29 +12,29 @@ import { PrismaService } from "src/prisma.service"
 
 @Injectable()
 export class EmailService {
-	constructor(private prismaService: PrismaService) {}
+  constructor(private prismaService: PrismaService) {}
 
-	async sendVerificationEmail(email: string, code: string) {
-		// const ACCESS_TOKEN = await oAuth2Client.getAccessToken()
-		const transporter = nodemailer.createTransport({
-			service: "gmail",
-			host: "smtp.gmail.com",
-			port: 465,
-			secure: true,
-			auth: {
-				user: process.env.EMAIL_USER,
-				pass: process.env.EMAIL_PASSWORD,
-			},
-			// tls: {
-			// 	rejectUnauthorized: true,
-			// },
-		} as nodemailer.TransportOptions)
+  async sendVerificationEmail(email: string, code: string) {
+    // const ACCESS_TOKEN = await oAuth2Client.getAccessToken()
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+      // tls: {
+      // 	rejectUnauthorized: true,
+      // },
+    } as nodemailer.TransportOptions);
 
-		const mailOptions = {
-			from: process.env.EMAIL_USER,
-			to: email,
-			subject: "Email Verification",
-			html: `
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Email Verification',
+      html: `
 				<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 					<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
 					<head>
@@ -101,32 +101,6 @@ export class EmailService {
 										<table class="es-content-body" cellspacing="0" cellpadding="0" bgcolor="#ffffff" align="center" role="none" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:#FFFFFF;width:600px">
 											<tr>
 												<td align="left" style="padding:0;Margin:0;padding-top:20px;padding-left:20px;padding-right:20px">
-												<table width="100%" cellspacing="0" cellpadding="0" role="none" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
-													<tr>
-														<td valign="top" align="center" style="padding:0;Margin:0;width:560px">
-														<table width="100%" cellspacing="0" cellpadding="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
-															<tr>
-																<td align="center" style="padding:0;Margin:0"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:30px;color:#333333;font-size:20px"><strong>Uplate</strong></p></td>
-															</tr>
-														</table></td>
-													</tr>
-												</table></td>
-											</tr>
-											<tr>
-												<td align="left" style="padding:0;Margin:0;padding-top:20px;padding-left:20px;padding-right:20px">
-												<table cellpadding="0" cellspacing="0" width="100%" role="none" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
-													<tr>
-														<td align="center" valign="top" style="padding:0;Margin:0;width:560px">
-														<table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
-															<tr>
-																<td align="center" style="padding:0;Margin:0;font-size:0px"><img class="adapt-img" src="https://zpepe.stripocdn.email/content/guids/CABINET_efc2896b72de405ff63edae3aa2a15a5311388b651127caa99c4b8ddc98de5af/images/svgviewerpngoutput_1_1_1.png" alt style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic" width="80"></td>
-															</tr>
-														</table></td>
-													</tr>
-												</table></td>
-											</tr>
-											<tr>
-												<td align="left" style="padding:0;Margin:0;padding-top:20px;padding-left:20px;padding-right:20px">
 												<table cellpadding="0" cellspacing="0" width="100%" role="none" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
 													<tr>
 														<td align="center" valign="top" style="padding:0;Margin:0;width:560px">
@@ -147,11 +121,11 @@ export class EmailService {
 					</body>
 					</html>
 			`,
-		}
+    };
 
-		await transporter.sendMail(mailOptions)
-	}
-	findOne(email: string) {
-		return this.prismaService.email.findUnique({ where: { email } })
-	}
+    await transporter.sendMail(mailOptions);
+  }
+  findOne(email: string) {
+    return this.prismaService.email.findUnique({ where: { email } });
+  }
 }
