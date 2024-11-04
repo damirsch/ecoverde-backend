@@ -3,6 +3,7 @@ import { PlantType } from '@prisma/client';
 
 export class CreatePlantDto {
   @IsEnum(PlantType)
+  @IsString()
   type: PlantType;
 
   @IsString()

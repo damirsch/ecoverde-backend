@@ -7,6 +7,8 @@ export class AdminService {
   constructor(private prisma: PrismaService) {}
 
   async addPlant(createPlantDto: CreatePlantDto) {
+    console.log(createPlantDto);
+
     return this.prisma.plant.create({
       data: {
         type: createPlantDto.type,

@@ -31,11 +31,17 @@ model Plant {
   @@map("plants")
 }
 
+enum UserRole {
+  ADMIN
+  USER
+}
+
 model User {
   id             String      @id @default(uuid())
   email          String      @unique @db.VarChar(120)
   password       String
   name           String?
+  role           UserRole    @default(USER)
   user_plants    UserPlant[]
   is_verified    Boolean?
   refresh_token  String?
