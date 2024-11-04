@@ -76,7 +76,7 @@ export class AuthService {
         is_verified: true,
         password: hashedPassword,
       });
-      const tokens = this.tokenService.generateTokens(user.email, user.id);
+      const tokens = this.tokenService.generateTokens(user);
       await this.usersService.update(user.email, {
         refresh_token: tokens.refresh_token,
       });
@@ -103,7 +103,7 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid email or password');
     }
-    const tokens = this.tokenService.generateTokens(user.email, user.id);
+    const tokens = this.tokenService.generateTokens(user);
     await this.usersService.update(user.email, {
       refresh_token: tokens.refresh_token,
     });
@@ -123,7 +123,7 @@ export class AuthService {
       if (!user) {
         throw new UnauthorizedException('User not found');
       }
-      return this.tokenService.generateTokens(user.email, user.id);
+      return this.tokenService.generateTokens(user);
     } catch (error) {
       throw new UnauthorizedException('Invalid refresh token');
     }
