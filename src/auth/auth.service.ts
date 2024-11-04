@@ -117,13 +117,15 @@ export class AuthService {
   async refresh(refreshToken: string) {
     try {
       const payload = this.jwtService.verify(refreshToken, {
-        secret: process.env.JWT_SECRET,
+        secret: process.env.JWT_REFRESH_SECRET,
       });
       const user = await this.usersService.findOne(payload.email);
       if (!user) {
         throw new UnauthorizedException('User not found');
       }
-      return this.tokenService.generateTokens(user);
+      return {
+        access_token: this.tokenService.generateTokens(user).access_token,
+      };
     } catch (error) {
       throw new UnauthorizedException('Invalid refresh token');
     }
