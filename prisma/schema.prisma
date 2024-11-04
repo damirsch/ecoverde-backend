@@ -19,7 +19,7 @@ enum PlantType {
 
 model Plant {
   id                         String      @id @default(uuid())
-  type                       PlantType
+  type                       PlantType   @unique
   gltf_model_url             String
   care_instructions          String
   watering_interval          Int
