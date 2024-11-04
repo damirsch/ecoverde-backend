@@ -18,13 +18,15 @@ enum PlantType {
 }
 
 model Plant {
-  id                String      @id @default(uuid())
-  type              PlantType
-  gltf_model_url    String
-  care_instructions String
-  created_at        DateTime    @default(now())
-  updated_at        DateTime    @updatedAt
-  user_plants       UserPlant[]
+  id                         String      @id @default(uuid())
+  type                       PlantType
+  gltf_model_url             String
+  care_instructions          String
+  watering_interval          Int
+  max_waterings_per_interval Int
+  created_at                 DateTime    @default(now())
+  updated_at                 DateTime    @updatedAt
+  user_plants                UserPlant[]
 
   @@map("plants")
 }
