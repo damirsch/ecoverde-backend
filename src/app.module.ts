@@ -13,6 +13,9 @@ import { PlantsService } from './plants/plants.service';
 import { PlantsController } from './plants/plants.controller';
 import { ProfileController } from './profile/profile.controller';
 import { ProfileService } from './profile/profile.service';
+import { TelegramService } from './bot/telegram.service';
+import { WateringReminderService } from './bot/watering-reminder.service';
+import { TelegramModule } from './bot/telegram.module';
 
 @Module({
   imports: [
@@ -20,6 +23,7 @@ import { ProfileService } from './profile/profile.service';
     AuthModule,
     ConfigModule.forRoot({ isGlobal: true }),
     EmailModule,
+    TelegramModule,
   ],
   controllers: [AdminController, PlantsController, ProfileController],
   providers: [
