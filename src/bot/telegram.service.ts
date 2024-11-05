@@ -61,6 +61,7 @@ export class TelegramService {
     this.bot.on('callback_query', async (callbackQuery) => {
       const chatId = callbackQuery.message.chat.id.toString();
       const username = callbackQuery.from.username;
+      const messageId = callbackQuery.message.message_id;
 
       if (!username) {
         return this.bot.sendMessage(
@@ -82,16 +83,28 @@ export class TelegramService {
           where: { telegram_name: username },
           data: { telegram_chat_id: chatId },
         });
+        await this.bot.editMessageReplyMarkup(
+          { inline_keyboard: [] },
+          { chat_id: chatId, message_id: messageId },
+        );
         return this.bot.sendMessage(
           chatId,
           'Ваш Telegram ID успешно сохранен в профиле.',
         );
       } else if (callbackQuery.data === 'cancel_link') {
+        await this.bot.editMessageReplyMarkup(
+          { inline_keyboard: [] },
+          { chat_id: chatId, message_id: messageId },
+        );
         return this.bot.sendMessage(chatId, 'Привязка аккаунта отменена.');
       } else if (callbackQuery.data.startsWith('water_plant_')) {
         const userPlantId = callbackQuery.data.split('_')[2];
         try {
           await this.wateringService.waterPlant(userPlantId);
+          await this.bot.editMessageReplyMarkup(
+            { inline_keyboard: [] },
+            { chat_id: chatId, message_id: messageId },
+          );
           this.bot.sendMessage(chatId, 'Растение успешно полито!');
         } catch (error) {
           this.bot.sendMessage(chatId, `Ошибка: ${error.message}`);
