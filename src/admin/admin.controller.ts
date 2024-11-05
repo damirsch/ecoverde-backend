@@ -1,4 +1,11 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Delete,
+  Param,
+} from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreatePlantDto } from './dto/create-plant.dto';
 import { AuthGuard } from 'src/common/guards/auth.guard';
@@ -20,5 +27,11 @@ export class AdminController {
   @Roles('ADMIN')
   async changePlant(@Body() changePlantDto: ChangePlantDto) {
     return this.adminService.changePlant(changePlantDto);
+  }
+
+  @Delete('plant/:plantId')
+  @Roles('ADMIN')
+  async removePlant(@Param('plantId') plantId: string) {
+    return this.adminService.removePlant(plantId);
   }
 }

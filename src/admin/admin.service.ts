@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreatePlantDto } from './dto/create-plant.dto';
 import { ChangePlantDto } from './dto/change-plant.dto';
@@ -39,6 +43,21 @@ export class AdminService {
         watering_interval: changePlantDto.watering_interval,
         max_waterings_per_interval: changePlantDto.max_waterings_per_interval,
       },
+    });
+  }
+
+  async removePlant(plantId: string) {
+    const existingPlant = await this.prismaService.plant.findUnique({
+      where: { id: plantId },
+    });
+    if (!existingPlant) {
+      throw new NotFoundException('Plant not found in catalog');
+    }
+    await this.prismaService.userPlant.deleteMany({
+      where: { plant_id: plantId },
+    });
+    return this.prismaService.plant.delete({
+      where: { id: plantId },
     });
   }
 }

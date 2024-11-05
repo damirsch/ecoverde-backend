@@ -16,7 +16,6 @@ export class ProfileService {
 
   async addPlantToProfile(userId: string, addPlantDto: AddPlantDto) {
     const { name, plantId } = addPlantDto;
-    console.log(plantId, name);
     const existingPlant = await this.prismaService.userPlant.findUnique({
       where: {
         user_id_plant_id: {
@@ -28,9 +27,6 @@ export class ProfileService {
     const plantFromCatalog = await this.prismaService.plant.findUnique({
       where: { id: plantId },
     });
-
-    console.log(plantFromCatalog);
-    console.log(existingPlant);
     if (!plantFromCatalog) {
       throw new ForbiddenException('There is no plant in catalog');
     }
@@ -66,5 +62,27 @@ export class ProfileService {
       throw new NotFoundException('Plant not found in profile');
     }
     return userPlant;
+  }
+
+  async removePlantFromProfile(userId: string, plantId: string) {
+    const existingPlant = await this.prismaService.userPlant.findUnique({
+      where: {
+        user_id_plant_id: {
+          user_id: userId,
+          plant_id: plantId,
+        },
+      },
+    });
+    if (!existingPlant) {
+      throw new NotFoundException('Plant not found');
+    }
+    return this.prismaService.userPlant.delete({
+      where: {
+        user_id_plant_id: {
+          user_id: userId,
+          plant_id: plantId,
+        },
+      },
+    });
   }
 }

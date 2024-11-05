@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Param, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Body,
+  UseGuards,
+  Delete,
+} from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
@@ -40,5 +48,17 @@ export class ProfileController {
   @Get('plant/:userPlantId')
   async getPlant(@Param() params: PlantParamDto) {
     return this.profileService.getPlantInProfileById(+params.userPlantId);
+  }
+
+  @Roles('USER')
+  @Delete('plant/:userPlantId')
+  async removePlant(
+    @CurrentUser() user: UserFromToken,
+    @Param() params: PlantParamDto,
+  ) {
+    return this.profileService.removePlantFromProfile(
+      user.sub,
+      params.userPlantId,
+    );
   }
 }
