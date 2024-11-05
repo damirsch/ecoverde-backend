@@ -77,9 +77,9 @@ model UserPlant {
 
 model WateringHistory {
   id            Int       @id @default(autoincrement())
-  user_plant_id Int
+  user_plant_id String
   watered_at    DateTime  @default(now())
-  user_plant    UserPlant @relation(fields: [user_plant_id], references: [id])
+  user_plant    UserPlant @relation(fields: [user_plant_id], references: [plant_id])
 
   @@map("watering_history")
 }

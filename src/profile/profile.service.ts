@@ -42,7 +42,7 @@ export class ProfileService {
     });
   }
 
-  async waterPlant(userPlantId: number) {
+  async waterPlant(userPlantId: string) {
     return this.wateringService.waterPlant(userPlantId);
   }
 

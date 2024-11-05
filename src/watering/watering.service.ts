@@ -1,5 +1,9 @@
 // src/watering/watering.service.ts
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { subDays } from 'date-fns';
 
@@ -7,9 +11,9 @@ import { subDays } from 'date-fns';
 export class WateringService {
   constructor(private prismaService: PrismaService) {}
 
-  async canWaterPlant(userPlantId: number): Promise<boolean> {
+  async canWaterPlant(userPlantId: string): Promise<boolean> {
     const userPlant = await this.prismaService.userPlant.findUnique({
-      where: { id: userPlantId },
+      where: { plant_id: userPlantId },
       include: { plant: true },
     });
     if (!userPlant) {
@@ -28,10 +32,10 @@ export class WateringService {
     return wateringCount < max_waterings_per_interval;
   }
 
-  async waterPlant(userPlantId: number) {
+  async waterPlant(userPlantId: string) {
     const canWater = await this.canWaterPlant(userPlantId);
     if (!canWater) {
-      throw new Error(
+      throw new ForbiddenException(
         'This plant has reached its watering limit for the specified interval.',
       );
     }
