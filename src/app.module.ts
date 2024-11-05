@@ -9,6 +9,10 @@ import { PrismaService } from './prisma.service';
 import { WateringService } from './watering/watering.service';
 import { AdminService } from './admin/admin.service';
 import { AdminController } from './admin/admin.controller';
+import { PlantsService } from './plants/plants.service';
+import { PlantsController } from './plants/plants.controller';
+import { ProfileController } from './profile/profile.controller';
+import { ProfileService } from './profile/profile.service';
 
 @Module({
   imports: [
@@ -17,7 +21,15 @@ import { AdminController } from './admin/admin.controller';
     ConfigModule.forRoot({ isGlobal: true }),
     EmailModule,
   ],
-  controllers: [AdminController],
-  providers: [TokenService, JwtService, PrismaService, WateringService, AdminService],
+  controllers: [AdminController, PlantsController, ProfileController],
+  providers: [
+    TokenService,
+    JwtService,
+    PrismaService,
+    WateringService,
+    AdminService,
+    PlantsService,
+    ProfileService,
+  ],
 })
 export class AppModule {}

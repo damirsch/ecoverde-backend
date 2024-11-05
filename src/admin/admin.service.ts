@@ -8,12 +8,11 @@ export class AdminService {
   constructor(private prismaService: PrismaService) {}
 
   async addPlant(createPlantDto: CreatePlantDto) {
-    const existingPlant = this.prismaService.plant.findUnique({
+    const existingPlant = await this.prismaService.plant.findUnique({
       where: { type: createPlantDto.type },
     });
     if (existingPlant)
       throw new ForbiddenException('This plant is already exist');
-
     return this.prismaService.plant.create({
       data: {
         type: createPlantDto.type,
