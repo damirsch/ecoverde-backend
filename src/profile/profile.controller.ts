@@ -15,12 +15,13 @@ export class ProfileController {
 
   @Roles('USER')
   @Post('add-plant')
-  async addPlant(@CurrentUser() id: string, @Body() addPlantDto: AddPlantDto) {
-    return this.profileService.addPlantToProfile(
-      id,
-      addPlantDto.plantId,
-      addPlantDto.name,
-    );
+  async addPlant(
+    @CurrentUser() user: UserFromToken,
+    @Body() addPlantDto: AddPlantDto,
+  ) {
+    console.log(addPlantDto);
+
+    return this.profileService.addPlantToProfile(user.sub, addPlantDto);
   }
 
   @Roles('USER')
@@ -38,6 +39,6 @@ export class ProfileController {
   @Roles('USER')
   @Get('plant/:userPlantId')
   async getPlant(@Param() params: PlantParamDto) {
-    return this.profileService.getPlantInProfileById(params.userPlantId);
+    return this.profileService.getPlantInProfileById(+params.userPlantId);
   }
 }

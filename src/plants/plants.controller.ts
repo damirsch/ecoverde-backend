@@ -5,7 +5,7 @@ import { PlantsService } from './plants.service';
 export class PlantsController {
   constructor(private readonly plantsService: PlantsService) {}
 
-  @Get('all')
+  @Get('')
   all() {
     return this.plantsService.getAll();
   }

@@ -63,7 +63,7 @@ model Email {
 model UserPlant {
   id               Int               @id @default(autoincrement())
   user_id          String
-  plant_id         String
+  plant_id         String            @unique
   name             String
   last_watered_at  DateTime?
   user             User              @relation(fields: [user_id], references: [id])
