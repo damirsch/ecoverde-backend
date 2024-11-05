@@ -11,25 +11,36 @@ export class WateringReminderService {
     private readonly telegramService: TelegramService,
   ) {}
 
-  @Cron('* * * * *') // для тестирования напоминание каждую минуту
+  @Cron('* * * * *')
   async sendWateringReminders() {
     const plantsToWater = await this.prismaService.userPlant.findMany({
-      include: { plant: true, user: true },
+      include: {
+        plant: true,
+        user: true,
+      },
     });
 
     for (const plant of plantsToWater) {
       const {
         plant_id,
         name,
-        last_watered_at,
         plant: { watering_interval },
         user,
       } = plant;
+      const lastWatering = await this.prismaService.wateringHistory.findFirst({
+        where: { user_plant_id: plant_id },
+        orderBy: { watered_at: 'desc' },
+      });
 
-      const nextWateringDate = last_watered_at
-        ? addDays(last_watered_at, watering_interval)
+      const lastWateredAt = lastWatering
+        ? lastWatering.watered_at
         : new Date(0);
-      console.log(nextWateringDate);
+      const nextWateringDate = addDays(lastWateredAt, watering_interval);
+
+      console.log(
+        `Следующая дата полива для растения "${name}":`,
+        nextWateringDate,
+      );
 
       if (isBefore(nextWateringDate, new Date()) && user?.telegram_chat_id) {
         await this.telegramService.sendMessageWithWateringOption(

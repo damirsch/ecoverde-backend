@@ -42,6 +42,7 @@ export class WateringService {
     return this.prismaService.wateringHistory.create({
       data: {
         user_plant_id: userPlantId,
+        watered_at: new Date(),
       },
     });
   }
