@@ -37,10 +37,10 @@ export class WateringReminderService {
         : new Date(0);
       const nextWateringDate = addDays(lastWateredAt, watering_interval);
 
-      console.log(
-        `Следующая дата полива для растения "${name}":`,
-        nextWateringDate,
-      );
+      // console.log(
+      //   `Следующая дата полива для растения "${name}":`,
+      //   nextWateringDate,
+      // );
 
       if (
         (isSameDay(nextWateringDate, startOfToday()) ||
