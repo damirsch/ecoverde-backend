@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { PrismaService } from 'src/prisma.service';
 import { TelegramService } from './telegram.service';
-import { addDays, isBefore } from 'date-fns';
+import { addDays, isSameDay, isPast, startOfToday } from 'date-fns';
 
 @Injectable()
 export class WateringReminderService {
@@ -11,7 +11,7 @@ export class WateringReminderService {
     private readonly telegramService: TelegramService,
   ) {}
 
-  @Cron('* * * * *')
+  @Cron('0 8 * * *')
   async sendWateringReminders() {
     const plantsToWater = await this.prismaService.userPlant.findMany({
       include: {
@@ -31,7 +31,6 @@ export class WateringReminderService {
         where: { user_plant_id: plant_id },
         orderBy: { watered_at: 'desc' },
       });
-
       const lastWateredAt = lastWatering
         ? lastWatering.watered_at
         : new Date(0);
@@ -42,7 +41,11 @@ export class WateringReminderService {
         nextWateringDate,
       );
 
-      if (isBefore(nextWateringDate, new Date()) && user?.telegram_chat_id) {
+      if (
+        (isSameDay(nextWateringDate, startOfToday()) ||
+          isPast(nextWateringDate)) &&
+        user?.telegram_chat_id
+      ) {
         await this.telegramService.sendMessageWithWateringOption(
           user.telegram_chat_id,
           `Напоминание: Пора полить ваше растение "${name}".`,
