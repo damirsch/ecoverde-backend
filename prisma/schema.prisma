@@ -54,6 +54,17 @@ model User {
   @@map("users")
 }
 
+model Notification {
+  id            Int       @id @default(autoincrement())
+  user_plant    UserPlant @relation(fields: [user_plant_id], references: [plant_id], onDelete: Cascade)
+  user_plant_id String
+  message_id    Int
+  chat_id       String
+  createdAt     DateTime  @default(now())
+
+  @@map("notifications")
+}
+
 model Email {
   email       String  @id @unique @db.VarChar(120)
   is_verified Boolean @default(false)
@@ -72,6 +83,7 @@ model UserPlant {
   plant            Plant             @relation(fields: [plant_id], references: [id])
   watering_history WateringHistory[]
   created_at       DateTime          @default(now())
+  Notification     Notification[]
 
   @@unique([user_id, plant_id])
   @@map("user_plants")

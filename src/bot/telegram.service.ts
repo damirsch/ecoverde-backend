@@ -74,38 +74,29 @@ export class TelegramService {
         where: { telegram_name: username },
       });
 
-      if (
-        callbackQuery.data === 'confirm_link' &&
-        user &&
-        !user.telegram_chat_id
-      ) {
-        await this.prisma.user.update({
-          where: { telegram_name: username },
-          data: { telegram_chat_id: chatId },
-        });
-        await this.bot.editMessageReplyMarkup(
-          { inline_keyboard: [] },
-          { chat_id: chatId, message_id: messageId },
-        );
-        return this.bot.sendMessage(
-          chatId,
-          'Ваш Telegram ID успешно сохранен в профиле.',
-        );
-      } else if (callbackQuery.data === 'cancel_link') {
-        await this.bot.editMessageReplyMarkup(
-          { inline_keyboard: [] },
-          { chat_id: chatId, message_id: messageId },
-        );
-        return this.bot.sendMessage(chatId, 'Привязка аккаунта отменена.');
-      } else if (callbackQuery.data.startsWith('water_plant_')) {
+      if (!user || !user.telegram_chat_id)
+        return this.bot.sendMessage(chatId, 'Invalid user');
+
+      if (callbackQuery.data.startsWith('water_plant_')) {
         const userPlantId = callbackQuery.data.split('_')[2];
         try {
           await this.wateringService.waterPlant(userPlantId);
-          await this.bot.editMessageReplyMarkup(
-            { inline_keyboard: [] },
-            { chat_id: chatId, message_id: messageId },
-          );
+          const notifications = await this.prisma.notification.findMany({
+            where: { user_plant_id: userPlantId },
+          });
+          for (const notification of notifications) {
+            await this.bot.editMessageReplyMarkup(
+              { inline_keyboard: [] },
+              {
+                chat_id: notification.chat_id,
+                message_id: notification.message_id,
+              },
+            );
+          }
           this.bot.sendMessage(chatId, 'Растение успешно полито!');
+          await this.prisma.notification.deleteMany({
+            where: { user_plant_id: userPlantId },
+          });
         } catch (error) {
           this.bot.sendMessage(chatId, `Ошибка: ${error.message}`);
         }

@@ -11,7 +11,7 @@ export class WateringReminderService {
     private readonly telegramService: TelegramService,
   ) {}
 
-  @Cron('0 8 * * *')
+  @Cron('0 8 * * *') // Запуск каждый день в 8 утра
   async sendWateringReminders() {
     const plantsToWater = await this.prismaService.userPlant.findMany({
       include: {
@@ -27,6 +27,7 @@ export class WateringReminderService {
         plant: { watering_interval },
         user,
       } = plant;
+
       const lastWatering = await this.prismaService.wateringHistory.findFirst({
         where: { user_plant_id: plant_id },
         orderBy: { watered_at: 'desc' },
@@ -46,11 +47,19 @@ export class WateringReminderService {
           isPast(nextWateringDate)) &&
         user?.telegram_chat_id
       ) {
-        await this.telegramService.sendMessageWithWateringOption(
-          user.telegram_chat_id,
-          `Напоминание: Пора полить ваше растение "${name}".`,
-          plant_id,
-        );
+        const message =
+          await this.telegramService.sendMessageWithWateringOption(
+            user.telegram_chat_id,
+            `Напоминание: Пора полить ваше растение "${name}".`,
+            plant_id,
+          );
+        await this.prismaService.notification.create({
+          data: {
+            user_plant_id: plant_id,
+            message_id: message.message_id,
+            chat_id: user.telegram_chat_id,
+          },
+        });
       }
     }
   }
