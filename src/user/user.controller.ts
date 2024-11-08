@@ -49,6 +49,12 @@ export class UserController {
   }
 
   @Roles('USER')
+  @Get('')
+  async getUserInfo(@CurrentUser() user: UserFromToken) {
+    return this.userService.findOne({ id: user.sub });
+  }
+
+  @Roles('USER')
   @Delete('plant/:userPlantId')
   async removePlant(
     @CurrentUser() user: UserFromToken,

@@ -31,7 +31,9 @@ export class AuthService {
   ) {}
 
   async register(createUserDto: CreateUserDto) {
-    const user = await this.usersService.findOne(createUserDto.email);
+    const user = await this.usersService.findOne({
+      email: createUserDto.email,
+    });
     if (user) {
       if (user.is_verified) {
         throw new ConflictException('User already registered and verified');
@@ -92,7 +94,7 @@ export class AuthService {
   }
 
   async login(loginUserDto: LoginUserDto, res: Response) {
-    const user = await this.usersService.findOne(loginUserDto.email);
+    const user = await this.usersService.findOne({ email: loginUserDto.email });
     if (!user) {
       throw new UnauthorizedException('Invalid email or password');
     }

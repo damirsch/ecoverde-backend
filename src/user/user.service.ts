@@ -2,6 +2,7 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { WateringService } from 'src/watering/watering.service';
@@ -91,8 +92,13 @@ export class UserService {
     return this.prismaService.user.create({ data: createUserDto });
   }
 
-  findOne(email: string) {
-    return this.prismaService.user.findUnique({ where: { email } });
+  findOne({ email, id }: { email?: string; id?: string }) {
+    if (!id && !email) throw new UnauthorizedException('');
+    if (id) {
+      return this.prismaService.user.findUnique({ where: { id } });
+    } else {
+      return this.prismaService.user.findUnique({ where: { email } });
+    }
   }
 
   update(email: string, updateUserDto: Partial<CreateUserDto>) {
