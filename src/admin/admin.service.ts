@@ -24,6 +24,7 @@ export class AdminService {
         care_instructions: createPlantDto.care_instructions,
         watering_interval: createPlantDto.watering_interval,
         max_waterings_per_interval: createPlantDto.max_waterings_per_interval,
+        image_url: createPlantDto.image_url,
       },
     });
   }

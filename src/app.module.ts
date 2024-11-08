@@ -14,6 +14,8 @@ import { PlantsController } from './plants/plants.controller';
 import { ProfileController } from './profile/profile.controller';
 import { ProfileService } from './profile/profile.service';
 import { TelegramModule } from './bot/telegram.module';
+import { ImageService } from './image/image.service';
+import { ImageController } from './image/image.controller';
 
 @Module({
   imports: [
@@ -23,7 +25,7 @@ import { TelegramModule } from './bot/telegram.module';
     EmailModule,
     TelegramModule,
   ],
-  controllers: [AdminController, PlantsController, ProfileController],
+  controllers: [AdminController, PlantsController, ProfileController, ImageController],
   providers: [
     TokenService,
     JwtService,
@@ -32,6 +34,7 @@ import { TelegramModule } from './bot/telegram.module';
     AdminService,
     PlantsService,
     ProfileService,
+    ImageService,
   ],
 })
 export class AppModule {}

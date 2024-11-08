@@ -7,7 +7,7 @@ export class PlantsService {
 
   async getAll() {
     return this.prismaService.plant.findMany({
-      select: { type: true, id: true },
+      select: { type: true, id: true, image_url: true },
     });
   }
 

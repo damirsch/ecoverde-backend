@@ -21,6 +21,7 @@ model Plant {
   id                         String      @id @default(uuid())
   type                       PlantType   @unique
   gltf_model_url             String
+  image_url                  String
   care_instructions          String
   watering_interval          Int
   max_waterings_per_interval Int

@@ -10,6 +10,9 @@ export class CreatePlantDto {
   gltf_model_url: string;
 
   @IsString()
+  image_url: string;
+
+  @IsString()
   care_instructions: string;
 
   @IsInt()
