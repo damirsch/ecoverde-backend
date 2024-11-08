@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/common/dto/create-user.dto';
-import { UsersService } from 'src/users/users.service';
+import { UserService } from 'src/user/user.service';
 import { EmailService } from 'src/email/email.service';
 import { VerifyEmailDto } from 'src/common/dto/verify-email.dto';
 import { PrismaService } from 'src/prisma.service';
@@ -23,7 +23,7 @@ export class AuthService {
   > = new Map();
 
   constructor(
-    private usersService: UsersService,
+    private usersService: UserService,
     private jwtService: JwtService,
     private emailService: EmailService,
     private prismaService: PrismaService,

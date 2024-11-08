@@ -6,9 +6,10 @@ import {
 import { PrismaService } from 'src/prisma.service';
 import { WateringService } from 'src/watering/watering.service';
 import { AddPlantDto } from './dto/add-plant.dto';
+import { CreateUserDto } from 'src/common/dto/create-user.dto';
 
 @Injectable()
-export class ProfileService {
+export class UserService {
   constructor(
     private prismaService: PrismaService,
     private wateringService: WateringService,
@@ -83,6 +84,21 @@ export class ProfileService {
           plant_id: plantId,
         },
       },
+    });
+  }
+
+  create(createUserDto: CreateUserDto) {
+    return this.prismaService.user.create({ data: createUserDto });
+  }
+
+  findOne(email: string) {
+    return this.prismaService.user.findUnique({ where: { email } });
+  }
+
+  update(email: string, updateUserDto: Partial<CreateUserDto>) {
+    return this.prismaService.user.update({
+      where: { email },
+      data: updateUserDto,
     });
   }
 }
